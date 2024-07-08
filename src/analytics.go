@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"strings"
 
-	"github.com/psykhi/wordclouds" //=> replaced with github.com/thenick775/wordclouds
+	"github.com/psykhi/wordclouds"
 )
 
 var lightModeColors = []color.RGBA{
@@ -32,12 +32,12 @@ var defaultConfImg = ConfImg{
 	FontMaxSize:     600,
 	FontMinSize:     15,
 	RandomPlacement: false,
-	FontFile:        "/Roboto-Regular.ttf", //prepended with fontLoc once initialized
-	Colors:          darkModeColors,        //dark is default
-	BackgroundColor: darkModeBackground,    //dark is default
+	FontFile:        "/Roboto-Regular.ttf", // prepended with fontLoc once initialized
+	Colors:          darkModeColors,        // dark is default
+	BackgroundColor: darkModeBackground,    // dark is default
 	Width:           2048,
 	Height:          2048,
-	Mask: MaskConf{"", color.RGBA{ //no masking by default
+	Mask: MaskConf{"", color.RGBA{ // no masking by default
 		R: 0,
 		G: 0,
 		B: 0,
@@ -49,7 +49,7 @@ var defaultConfImg = ConfImg{
 func genWordCloudImg() (image.Image, map[string]int) {
 	confImg := defaultConfImg
 	confImg.FontFile = fontLoc + confImg.FontFile
-	//exclusion zones if present
+	// exclusion zones if present
 	var boxes []*wordclouds.Box
 	if confImg.Mask.File != "" {
 		boxes = wordclouds.Mask(
@@ -58,7 +58,7 @@ func genWordCloudImg() (image.Image, map[string]int) {
 			confImg.Height,
 			confImg.Mask.Color)
 	}
-	//word colors
+	// word colors
 	if strings.EqualFold(state.currentThemeAlias, "light") {
 		confImg.Colors = lightModeColors
 		confImg.BackgroundColor = lightModeBackground
@@ -68,7 +68,7 @@ func genWordCloudImg() (image.Image, map[string]int) {
 	for _, c := range confImg.Colors {
 		colors = append(colors, c)
 	}
-	//data processing
+	// data processing
 	wordCounts := make(map[string]int)
 	for _, item := range lists.Data[state.currentList] {
 		splitTags := strings.Fields(item.Tags)
@@ -88,7 +88,7 @@ func genWordCloudImg() (image.Image, map[string]int) {
 		wordclouds.Height(confImg.Height),
 		wordclouds.Width(confImg.Width),
 		wordclouds.RandomPlacement(confImg.RandomPlacement))
-	//image generation
+	// image generation
 	img := cloud.Draw()
 	return img, wordCounts
 }
@@ -97,12 +97,12 @@ func genStats() []ListsSummary {
 	var ret []ListsSummary
 	keys := lists.GetOrderedListNames()
 	for _, key := range keys {
-		listsum := ListsSummary{
-			Name:                  key,                             //name of list
-			TotalContentCount:     len(lists.Data[key]),            //total number of items in list
-			ContentCountPerRating: getRatingCount(lists.Data[key]), //count of items in list per rating
+		listSum := ListsSummary{
+			Name:                  key,                             // name of list
+			TotalContentCount:     len(lists.Data[key]),            // total number of items in list
+			ContentCountPerRating: getRatingCount(lists.Data[key]), // count of items in list per rating
 		}
-		ret = append(ret, listsum)
+		ret = append(ret, listSum)
 	}
 
 	return ret
@@ -110,8 +110,8 @@ func genStats() []ListsSummary {
 
 func getRatingCount(list []ListItem) map[int]int {
 	var ret = make(map[int]int)
-	for _, listitem := range list {
-		ret[listitem.Rating] += 1
+	for _, listItem := range list {
+		ret[listItem.Rating] += 1
 	}
 	return ret
 }

@@ -22,10 +22,10 @@ require (
 	github.com/go-text/typesetting v0.1.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/google/uuid v1.3.1 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jsummers/gobmp v0.0.0-20230614200233-a9de23ed2e25 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
@@ -38,5 +38,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	honnef.co/go/js/dom v0.0.0-20231112215516-51f43a291193 // indirect
 )
-
-replace github.com/psykhi/wordclouds => github.com/thenick775/wordclouds v0.0.0-20220704040952-ff4d485aef5c
