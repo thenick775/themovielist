@@ -33,7 +33,7 @@ func (l *userList) Initialize() {
 		)
 		lists.GenListFromMap(state.currentList)
 	} else {
-		l.ShowData = listData{strlist: lists.GenListFromMap(state.currentList)} //gaurd this?
+		l.ShowData = listData{strlist: lists.GenListFromMap(state.currentList)} //guard this?
 		l.ShowData.data = binding.BindStringList(
 			&l.ShowData.strlist,
 		)
@@ -143,7 +143,7 @@ func (e *inquiryEntry) KeyUp(key *fyne.KeyEvent) {
 	}
 }
 
-// these are global keyhandlers attatched to the desktop window
+// these are global keyhandlers attached to the desktop window
 // they work in conjunction with the inquiry specific key handlers
 func deskdown(key *fyne.KeyEvent) {
 	if state.currentMenuItem == "Inquire" { //for inquiry
@@ -269,7 +269,7 @@ func (l *userList) RegexSearch(input string) {
 
 	rescnt, tmp := 0, []string{}
 	tmplinkage := make(map[int]int)
-	//generate linkage to orginal data mapping
+	//generate linkage to original data mapping
 	for idx, v := range res {
 		if val, ok := inquiry.SearchMap[v]; ok {
 			tmplinkage[idx] = val
@@ -291,7 +291,7 @@ func (l *userList) RegexSearch(input string) {
 	l.ShowData.strlist = tmp
 	l.SelectEntry.list_loc = 0
 	l.ShowData.data.Reload()
-	l.List.Select(0) // ??why doesnt this call onselected??
+	l.List.Select(0) // ??why doesn't this call onselected??
 	inquiryIndexAndExpand(0)
 }
 

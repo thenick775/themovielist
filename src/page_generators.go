@@ -486,7 +486,7 @@ func genWordCloud(_ fyne.Window) fyne.CanvasObject {
 	)
 
 	go func() { //async image processing/rendering+data processing
-		//gen image and retreive data
+		//gen image and retrieve data
 		g_img, g_data := genWordCloudImg()
 		image.Image = g_img
 		title.SetText("Word Cloud")

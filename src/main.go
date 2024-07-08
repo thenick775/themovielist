@@ -84,7 +84,7 @@ func main() {
 		lists.Data = make(map[string][]ListItem)
 	}
 
-	// intialize lists and inquiry
+	// initialize lists and inquiry
 	inquiry.Initialize()
 	lists.Initialize()
 
