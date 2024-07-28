@@ -26,16 +26,16 @@ func (i *Inquiry) Initialize() {
 
 func (l *userList) Initialize() {
 	l.ListModified = false
-	if state.alphasort.enabled {
-		l.ShowData = listData{strlist: []string{}}
+	if state.alphaSort.enabled {
+		l.ShowData = listData{strList: []string{}}
 		l.ShowData.data = binding.BindStringList(
-			&l.ShowData.strlist,
+			&l.ShowData.strList,
 		)
 		lists.GenListFromMap(state.currentList)
 	} else {
-		l.ShowData = listData{strlist: lists.GenListFromMap(state.currentList)} //guard this?
+		l.ShowData = listData{strList: lists.GenListFromMap(state.currentList)} //guard this?
 		l.ShowData.data = binding.BindStringList(
-			&l.ShowData.strlist,
+			&l.ShowData.strList,
 		)
 	}
 
@@ -53,7 +53,7 @@ func (l *userList) Initialize() {
 		})
 	l.List.OnSelected = inquiryIndexAndExpand
 
-	if state.alphasort.enabled {
+	if state.alphaSort.enabled {
 		inquiry.InqIntro = widget.NewLabel("Type your regex query here,\nuse the enter key to filter your list")
 		inquiry.InqIntro.Wrapping = fyne.TextWrapWord
 		l.RegexSearch("")
@@ -71,8 +71,8 @@ func newInquiryEntry() *inquiryEntry {
 func (i *inquiryEntry) KeyDown(key *fyne.KeyEvent) {
 	switch key.Name {
 	case fyne.KeyReturn:
-		if i.Text == "" && !state.alphasort.enabled {
-			lists.ShowData.strlist = lists.GenListFromMap(state.currentList)
+		if i.Text == "" && !state.alphaSort.enabled {
+			lists.ShowData.strList = lists.GenListFromMap(state.currentList)
 			lists.SelectEntry.list_loc = 0
 			lists.ShowData.data.Reload()
 			inquiry.LinkageMap = nil
@@ -143,9 +143,9 @@ func (e *inquiryEntry) KeyUp(key *fyne.KeyEvent) {
 	}
 }
 
-// these are global keyhandlers attached to the desktop window
+// these are global key handlers attached to the desktop window
 // they work in conjunction with the inquiry specific key handlers
-func deskdown(key *fyne.KeyEvent) {
+func deskDown(key *fyne.KeyEvent) {
 	if state.currentMenuItem == "Inquire" { //for inquiry
 		switch key.Name {
 		case fyne.KeyDown: //for inquiry list navigation
@@ -172,7 +172,7 @@ func deskdown(key *fyne.KeyEvent) {
 	}
 }
 
-func deskup(key *fyne.KeyEvent) {
+func deskUp(key *fyne.KeyEvent) {
 	switch key.Name { //for inquiry
 	case fyne.KeyLeft:
 		fallthrough
@@ -193,7 +193,7 @@ func inquiryScroll(key fyne.KeyEvent, loc int) {
 		switch key.Name {
 		case fyne.KeyDown: //for inquiry list navigation
 			loc += 1
-			if loc > len(lists.ShowData.strlist)-1 {
+			if loc > len(lists.ShowData.strList)-1 {
 				inquiry.InquiryScrollStop = false
 				break
 			}
@@ -213,20 +213,20 @@ func (l *userList) GenListFromMap(key string) []string {
 	var res []string
 	var searchstr bytes.Buffer
 	inquiry.SearchMap = make(map[string]int)
-	f, toremove := "", 0
+	f, toRemove := "", 0
 
 	for idx, val := range l.Data[key] {
 		res = append(res, val.Name)
 		if idx == len(l.Data[key])-1 {
 			f = fmt.Sprintf("%s %s %s", val.Name, strconv.Itoa(val.Rating), val.Tags)
-			toremove = len(f)
+			toRemove = len(f)
 		} else {
 			f = fmt.Sprintf("%s %s %s\n", val.Name, strconv.Itoa(val.Rating), val.Tags)
-			toremove = len(f) - 1
+			toRemove = len(f) - 1
 		}
 
 		searchstr.WriteString(f)
-		inquiry.SearchMap[f[:toremove]] = idx //generate regex search map, no linefeed
+		inquiry.SearchMap[f[:toRemove]] = idx //generate regex search map, no linefeed
 	}
 	inquiry.FilterList = searchstr.String() //generate regex  search string
 	return res
@@ -244,22 +244,22 @@ func (l *userList) GetOrderedListNames() []string {
 	return keys
 }
 
-func (l *userList) ListExists(listname string) bool {
+func (l *userList) ListExists(listName string) bool {
 	for k := range l.Data {
-		if k == listname {
+		if k == listName {
 			return true
 		}
 	}
 	return false
 }
 
-// regex search, and create linkage to original list datastructure
+// regex search, and create linkage to original list data structure
 func (l *userList) RegexSearch(input string) {
 	rep := regexp.MustCompile("(?im)^.*" + input + `.*$`)
 	res := rep.FindAllString(inquiry.FilterList, -1)
 
-	if state.alphasort.enabled { //order for alphabetical sort if enabled
-		switch state.alphasort.order {
+	if state.alphaSort.enabled { // order for alphabetical sort if enabled
+		switch state.alphaSort.order {
 		case 0:
 			sort.Strings(res)
 		case 1:
@@ -267,14 +267,14 @@ func (l *userList) RegexSearch(input string) {
 		}
 	}
 
-	rescnt, tmp := 0, []string{}
-	tmplinkage := make(map[int]int)
-	//generate linkage to original data mapping
+	resCount, tmp := 0, []string{}
+	tempLinkage := make(map[int]int)
+	// generate linkage to original data mapping
 	for idx, v := range res {
 		if val, ok := inquiry.SearchMap[v]; ok {
-			tmplinkage[idx] = val
+			tempLinkage[idx] = val
 			tmp = append(tmp, l.Data[state.currentList][val].Name)
-			rescnt += 1
+			resCount += 1
 		} else {
 			fmt.Println("v: ", v, "idx: ", idx)
 			dialog.ShowError(fmt.Errorf("Results do not match data linkage,\nplease check your regular expression"), w)
@@ -282,16 +282,16 @@ func (l *userList) RegexSearch(input string) {
 		}
 	}
 
-	inquiry.LinkageMap = tmplinkage
+	inquiry.LinkageMap = tempLinkage
 	if input == "" {
 		inquiry.InqIntro.SetText("Type your regex query here,\nuse the enter key to filter your list:\n" + state.currentList + ", size: " + strconv.Itoa(len(l.Data[state.currentList])))
 	} else {
 		inquiry.InqIntro.SetText("Querying List: " + state.currentList + ", query: " + input + "\nresult size: " + strconv.Itoa(len(res)))
 	}
-	l.ShowData.strlist = tmp
+	l.ShowData.strList = tmp
 	l.SelectEntry.list_loc = 0
 	l.ShowData.data.Reload()
-	l.List.Select(0) // ??why doesn't this call onselected??
+	l.List.Select(0) // ??why doesn't this call onSelected??
 	inquiryIndexAndExpand(0)
 }
 
@@ -327,7 +327,7 @@ func inquiryIndexAndExpand(index int) {
 	var item ListItem
 	if inquiry.LinkageMap == nil {
 		item = lists.Data[state.currentList][index]
-	} else { //use the linkage
+	} else { // use the linkage
 		item = lists.Data[state.currentList][inquiry.LinkageMap[index]]
 	}
 

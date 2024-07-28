@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"net/url"
+	"os"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/cmd/fyne_settings/settings"
 	"fyne.io/fyne/v2/data/validation"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
-	"net/url"
-	"os"
 )
 
 // system menu setup, this is the "external" system menu
@@ -112,17 +113,17 @@ func setupSystemMenu(w fyne.Window, a fyne.App) {
 
 	sortItem := fyne.NewMenuItem("Sort", nil)
 	sortItem.ChildMenu = fyne.NewMenu("", fyne.NewMenuItem("Alpha ASC", func() {
-		state.alphasort.enabled = true
-		state.alphasort.order = 0
+		state.alphaSort.enabled = true
+		state.alphaSort.order = 0
 		lists.RegexSearch(lists.SelectEntry.Text)
 	}),
 		fyne.NewMenuItem("Alpha DESC", func() {
-			state.alphasort.enabled = true
-			state.alphasort.order = 1
+			state.alphaSort.enabled = true
+			state.alphaSort.order = 1
 			lists.RegexSearch(lists.SelectEntry.Text)
 		}),
 		fyne.NewMenuItem("Enable/Disable", func() {
-			state.alphasort.enabled = !state.alphasort.enabled
+			state.alphaSort.enabled = !state.alphaSort.enabled
 			lists.RegexSearch(lists.SelectEntry.Text)
 		}),
 	)

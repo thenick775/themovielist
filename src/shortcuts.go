@@ -53,11 +53,11 @@ func superSwitchListUp(shortcut fyne.Shortcut) {
 
 	state.currentList = s
 	lists.SelectEntry.SetText("")
-	if state.alphasort.enabled {
+	if state.alphaSort.enabled {
 		lists.GenListFromMap(s)
 		lists.RegexSearch("")
 	} else {
-		lists.ShowData.strlist = lists.GenListFromMap(s)
+		lists.ShowData.strList = lists.GenListFromMap(s)
 		lists.ShowData.data.Reload()
 		lists.SelectEntry.list_loc = 0
 		lists.List.Select(lists.SelectEntry.list_loc)
@@ -82,11 +82,11 @@ func superSwitchListDown(shortcut fyne.Shortcut) {
 
 	state.currentList = s
 	lists.SelectEntry.SetText("")
-	if state.alphasort.enabled {
+	if state.alphaSort.enabled {
 		lists.GenListFromMap(s)
 		lists.RegexSearch("")
 	} else {
-		lists.ShowData.strlist = lists.GenListFromMap(s)
+		lists.ShowData.strList = lists.GenListFromMap(s)
 		lists.ShowData.data.Reload()
 		lists.SelectEntry.list_loc = 0
 		lists.List.Select(lists.SelectEntry.list_loc)

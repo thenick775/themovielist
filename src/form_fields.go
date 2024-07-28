@@ -15,7 +15,7 @@ func NewSubmitEntry() *submitEntry {
 func (s *submitEntry) KeyUp(k *fyne.KeyEvent) {
 	switch k.Name {
 	case fyne.KeyReturn:
-		s.currFormFunc()
+		s.onSubmit()
 		w.Canvas().Unfocus()
 	}
 }

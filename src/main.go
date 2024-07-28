@@ -34,10 +34,10 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("execu path: ", path)
-	execupath := filepath.Dir(path)
-	confLoc = execupath + confLoc // append configuration location to executable path (in same dir)
+	executablePath := filepath.Dir(path)
+	confLoc = executablePath + confLoc // append configuration location to executable path (in same dir)
 	fmt.Println("conf loc:", confLoc)
-	fontLoc = execupath + "/fonts"
+	fontLoc = executablePath + "/fonts"
 	fmt.Println("font loc:", fontLoc)
 
 	// get configuration
@@ -59,8 +59,8 @@ func main() {
 	local_item_file := conf["configuration"].(map[string]interface{})["local item file"].(string)
 	state.currentList = conf["configuration"].(map[string]interface{})["default list"].(string)
 	state.noList = false
-	state.alphasort.enabled = false
-	state.alphasort.order = 0
+	state.alphaSort.enabled = false
+	state.alphaSort.order = 0
 	state.currentThemeAlias = defaultTheme
 
 	a = app.New()
@@ -108,8 +108,8 @@ func main() {
 	}
 
 	if deskCanvas, ok := w.Canvas().(desktop.Canvas); ok {
-		deskCanvas.SetOnKeyDown(deskdown) // for monitoring navigation of the list in inquire mode
-		deskCanvas.SetOnKeyUp(deskup)
+		deskCanvas.SetOnKeyDown(deskDown) // for monitoring navigation of the list in inquire mode
+		deskCanvas.SetOnKeyUp(deskUp)
 	} else {
 		panic("mobile not yet supported")
 	}

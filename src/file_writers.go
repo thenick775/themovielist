@@ -39,7 +39,7 @@ func write_csv(fullexport bool, fname string) {
 		}
 	} else {
 		buf += "name\n"
-		for _, v := range lists.ShowData.strlist {
+		for _, v := range lists.ShowData.strList {
 			buf += v + "\n"
 		}
 	}
@@ -73,7 +73,7 @@ func write_json(fullexport bool, fname string) {
 			}
 		}
 	} else {
-		buf, err = json.MarshalIndent(lists.ShowData.strlist, "", " ")
+		buf, err = json.MarshalIndent(lists.ShowData.strList, "", " ")
 		if err != nil {
 			dialog.ShowError(fmt.Errorf("Failed to create export file:\n"+err.Error()), w)
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 func menuTree(w fyne.Window, view *fyne.Container, defaultSelected string) *widget.Tree {
-	listtree := map[string][]string{
+	listTree := map[string][]string{
 		"":              {"Quick Actions", "My Lists", "Analytics", "Configuration"},
 		"Quick Actions": {"Inquire", "Add", "Remove", "Edit"},
 		"My Lists":      {"Switch List", "Add List", "Delete List", "Edit List"},
@@ -17,7 +17,7 @@ func menuTree(w fyne.Window, view *fyne.Container, defaultSelected string) *widg
 		"Configuration": {"Defaults"},
 	}
 
-	pagemap := map[string]MenuPageLink{ // for tree list page navigation/generation
+	pageMap := map[string]MenuPageLink{ // for tree list page navigation/generation
 		"Inquire":     {View: genInquire},
 		"Add":         {View: genAddForm},
 		"Remove":      {View: genRemove},
@@ -31,9 +31,9 @@ func menuTree(w fyne.Window, view *fyne.Container, defaultSelected string) *widg
 		"Statistics":  {View: genStatistics},
 	}
 
-	tree := widget.NewTreeWithStrings(listtree)
+	tree := widget.NewTreeWithStrings(listTree)
 	tree.OnSelected = func(uid string) { // here we switch between views
-		if page, ok := pagemap[uid]; ok {
+		if page, ok := pageMap[uid]; ok {
 			state.currentMenuItem = uid
 			view.Objects = []fyne.CanvasObject{page.View(w)}
 			view.Refresh()
@@ -45,7 +45,7 @@ func menuTree(w fyne.Window, view *fyne.Container, defaultSelected string) *widg
 
 	// get branch to open based on defaultSelected
 	broken, defaultBranch := false, ""
-	for key, val := range listtree {
+	for key, val := range listTree {
 		if key != "" {
 			for _, item := range val {
 				if item == defaultSelected {

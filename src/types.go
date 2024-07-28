@@ -17,18 +17,18 @@ type MenuPageLink struct {
 // form structures
 type submitEntry struct {
 	widget.Entry
-	currFormFunc func()
+	onSubmit func()
 }
 
 // inquiry structures
 type inquiryEntry struct {
 	widget.Entry
-	list_loc int //move this to the listdata struct??
+	list_loc int // move this to the listData struct??
 }
 
 type listData struct {
 	data    binding.ExternalStringList
-	strlist []string
+	strList []string
 }
 
 type ListItem struct {
@@ -69,13 +69,13 @@ type AppState struct {
 	currentList       string
 	currentMenuItem   string
 	noList            bool
-	alphasort         AlphaSort
+	alphaSort         alphaSort
 	currentThemeAlias string
 }
 
-type AlphaSort struct {
+type alphaSort struct {
 	enabled bool
-	order   int //0 asc, 1 desc
+	order   int // 0 asc, 1 desc
 }
 
 // Default Word Cloud Configuration

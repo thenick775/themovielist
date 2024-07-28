@@ -53,7 +53,7 @@ func genAddForm(_ fyne.Window) fyne.CanvasObject {
 			if inquiry.LinkageMap != nil { //refresh the linkage map/search map
 				lists.RegexSearch(lists.SelectEntry.Text)
 			} else { //append shown data to existing baselist
-				lists.ShowData.strlist = append(lists.ShowData.strlist, name.Text)
+				lists.ShowData.strList = append(lists.ShowData.strList, name.Text)
 				lists.ShowData.data.Reload()
 			}
 			name.SetText("")
@@ -65,7 +65,7 @@ func genAddForm(_ fyne.Window) fyne.CanvasObject {
 			lists.ListModified = true
 		},
 	}
-	tagentry.currFormFunc = form.OnSubmit
+	tagentry.onSubmit = form.OnSubmit
 
 	title := widget.NewLabel("Add")
 	intro := widget.NewLabel("Add items to your list here, use the enter key to submit\n")
@@ -128,9 +128,9 @@ func genRemove(w fyne.Window) fyne.CanvasObject {
 						//need to implement
 						dialog.ShowInformation("Information", "List Item: "+name.Text+" deleted", w)
 						lists.ListModified = true
-						for i := range lists.ShowData.strlist { //remove from
-							if lists.ShowData.strlist[i] == name.Text {
-								lists.ShowData.strlist = append(lists.ShowData.strlist[:i], lists.ShowData.strlist[i+1:]...)
+						for i := range lists.ShowData.strList { //remove from
+							if lists.ShowData.strList[i] == name.Text {
+								lists.ShowData.strList = append(lists.ShowData.strList[:i], lists.ShowData.strList[i+1:]...)
 								break
 							}
 						}
@@ -147,7 +147,7 @@ func genRemove(w fyne.Window) fyne.CanvasObject {
 			cnf.Show()
 		},
 	}
-	name.currFormFunc = form.OnSubmit
+	name.onSubmit = form.OnSubmit
 
 	return container.NewBorder(
 		container.NewVBox(title, widget.NewSeparator(), intro), nil, nil, nil, container.NewPadded(form))
@@ -201,7 +201,7 @@ func genEdit(_ fyne.Window) fyne.CanvasObject {
 			lists.ListModified = true
 		},
 	}
-	tagentry.currFormFunc = form.OnSubmit
+	tagentry.onSubmit = form.OnSubmit
 
 	title := widget.NewLabel("Edit")
 	intro := widget.NewLabel("Edit items in your list here, use the enter key to submit\n")
@@ -307,7 +307,7 @@ func genConfEdit(w fyne.Window) fyne.CanvasObject {
 			cnf.Show()
 		},
 	}
-	localItemFile.currFormFunc = form.OnSubmit
+	localItemFile.onSubmit = form.OnSubmit
 
 	return container.NewBorder(
 		container.NewVBox(title, widget.NewSeparator(), intro), nil, nil, nil, container.NewPadded(form))
@@ -321,11 +321,11 @@ func genSwitchList(_ fyne.Window) fyne.CanvasObject {
 	radiogr := widget.NewRadioGroup(keys, func(s string) {
 		state.currentList = s
 		lists.SelectEntry.SetText("")
-		if state.alphasort.enabled {
+		if state.alphaSort.enabled {
 			lists.GenListFromMap(s)
 			lists.RegexSearch("")
 		} else {
-			lists.ShowData.strlist = lists.GenListFromMap(s)
+			lists.ShowData.strList = lists.GenListFromMap(s)
 			lists.ShowData.data.Reload()
 			lists.SelectEntry.list_loc = 0
 			lists.List.Select(lists.SelectEntry.list_loc)
@@ -365,7 +365,7 @@ func genAddList(_ fyne.Window) fyne.CanvasObject {
 			newList.SetValidationError(nil)
 		},
 	}
-	newList.currFormFunc = form.OnSubmit
+	newList.onSubmit = form.OnSubmit
 
 	return container.NewBorder(
 		container.NewVBox(title, widget.NewSeparator(), intro), nil, nil, nil, container.NewPadded(form))
@@ -396,7 +396,7 @@ func genEditList(_ fyne.Window) fyne.CanvasObject {
 			lists.ListModified = true
 		},
 	}
-	newList.currFormFunc = form.OnSubmit
+	newList.onSubmit = form.OnSubmit
 
 	return container.NewBorder(
 		container.NewVBox(title, widget.NewSeparator(), intro), nil, nil, nil, container.NewPadded(form))
@@ -428,7 +428,7 @@ func genDeleteList(_ fyne.Window) fyne.CanvasObject {
 						lists.ListModified = true
 						if state.currentList == delList.Text {
 							key_zero := lists.GetOrderedListNames()[0] //need to work on case deleting last list
-							lists.ShowData.strlist = lists.GenListFromMap(key_zero)
+							lists.ShowData.strList = lists.GenListFromMap(key_zero)
 							lists.SelectEntry.list_loc = 0
 							lists.List.Select(lists.SelectEntry.list_loc)
 							lists.ShowData.data.Reload()

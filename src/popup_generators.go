@@ -1,17 +1,18 @@
 package main
 
 import (
+	"image"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/validation"
 	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/widget"
-	"image"
 )
 
 func genKeyBoardShortcutPopup() {
-	helppop := a.NewWindow("Help")
-	helppop.SetContent(container.NewVScroll(container.NewVBox(
+	helpPop := a.NewWindow("Help")
+	helpPop.SetContent(container.NewVScroll(container.NewVBox(
 		widget.NewLabel("Keyboard Shortcuts"),
 		widget.NewSeparator(),
 		widget.NewLabel("Super+F -> Focus on Inquiry Input Field"),
@@ -23,38 +24,38 @@ func genKeyBoardShortcutPopup() {
 		widget.NewLabel("Super+Up -> Switch List (alphabetically up)"),
 		widget.NewLabel("Super+Down -> Switch List (alphabetically down)"),
 	)))
-	helppop.Resize(fyne.NewSize(210, 275))
+	helpPop.Resize(fyne.NewSize(210, 275))
 
-	if deskCanvas, ok := helppop.Canvas().(desktop.Canvas); ok {
+	if deskCanvas, ok := helpPop.Canvas().(desktop.Canvas); ok {
 		deskCanvas.SetOnKeyDown(func(key *fyne.KeyEvent) {
 			if key.Name == fyne.KeyEscape {
-				helppop.Close()
+				helpPop.Close()
 			}
 		})
 	}
-	helppop.Show()
+	helpPop.Show()
 }
 
 // used for export to csv and to json
 func NewExportPop(filetype string) {
 	exp := a.NewWindow("Export " + filetype)
-	fullexport := false
+	fullExport := false
 	cancel := widget.NewButton("Cancel", func() {
 		exp.Close()
 	})
-	fname := widget.NewEntry()
-	fname.SetPlaceHolder("File name")
+	fileName := widget.NewEntry()
+	fileName.SetPlaceHolder("File name")
 	submit := widget.NewButton("Submit", func() {
 		switch filetype {
 		case "CSV":
-			write_csv(fullexport, fname.Text)
+			write_csv(fullExport, fileName.Text)
 		case "JSON":
-			write_json(fullexport, fname.Text)
+			write_json(fullExport, fileName.Text)
 		}
 	})
 	submit.Disable()
-	fname.Validator = validation.NewRegexp(`^.+$`, "file name cannot be empty")
-	fname.SetOnValidationChanged(func(err error) {
+	fileName.Validator = validation.NewRegexp(`^.+$`, "file name cannot be empty")
+	fileName.SetOnValidationChanged(func(err error) {
 		if err != nil {
 			submit.Disable()
 		} else {
@@ -62,12 +63,12 @@ func NewExportPop(filetype string) {
 		}
 	})
 	check := widget.NewCheck("Full Data", func(value bool) {
-		fullexport = value
+		fullExport = value
 	})
 
 	exp.SetContent(container.NewVScroll(container.NewVBox(
 		check,
-		fname,
+		fileName,
 		container.NewHBox(submit, cancel),
 	)))
 	exp.Resize(fyne.NewSize(400, 150))
@@ -88,15 +89,15 @@ func NewImgExportPop(img image.Image) {
 	cancel := widget.NewButton("Cancel", func() {
 		exp.Close()
 	})
-	fname := widget.NewEntry()
-	fname.SetPlaceHolder("File name")
+	fileName := widget.NewEntry()
+	fileName.SetPlaceHolder("File name")
 	submit := widget.NewButton("Submit", func() {
-		write_png(img, fname.Text)
+		write_png(img, fileName.Text)
 		exp.Close()
 	})
 	submit.Disable()
-	fname.Validator = validation.NewRegexp(`^.+\.png$`, ".png file name cannot be empty")
-	fname.SetOnValidationChanged(func(err error) {
+	fileName.Validator = validation.NewRegexp(`^.+\.png$`, ".png file name cannot be empty")
+	fileName.SetOnValidationChanged(func(err error) {
 		if err != nil {
 			submit.Disable()
 		} else {
@@ -105,7 +106,7 @@ func NewImgExportPop(img image.Image) {
 	})
 
 	exp.SetContent(container.NewVScroll(container.NewVBox(
-		fname,
+		fileName,
 		container.NewHBox(submit, cancel),
 	)))
 	exp.Resize(fyne.NewSize(400, 90))
