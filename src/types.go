@@ -25,11 +25,11 @@ type inquiryEntry struct {
 	list_loc int // move this to the listData struct??
 }
 type userList struct {
-	Data         map[string][]list.ListItem
-	List         *widget.List
-	SelectEntry  *inquiryEntry
-	ShowData     list.ListData
-	Modified bool
+	Data        map[string][]list.ListItem
+	List        *widget.List
+	SelectEntry *inquiryEntry
+	ShowData    list.ListData
+	Modified    bool
 }
 type Inquiry struct {
 	FilterList        string

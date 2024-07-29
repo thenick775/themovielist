@@ -14,8 +14,8 @@ var defaultConfImg = confImg{
 	FontMinSize:     15,
 	RandomPlacement: false,
 	FontFile:        "Roboto-Regular.ttf", // prepended with fontLoc once initialized
-	Colors:          darkModeColors,               // dark is default
-	BackgroundColor: darkModeBackground,           // dark is default
+	Colors:          darkModeColors,       // dark is default
+	BackgroundColor: darkModeBackground,   // dark is default
 	Width:           2048,
 	Height:          2048,
 	Mask: maskConf{
