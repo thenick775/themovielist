@@ -7,6 +7,7 @@ import (
 	"image/png"
 	"os"
 	"strconv"
+	"the-list/list"
 
 	"fyne.io/fyne/v2/dialog"
 )
@@ -39,7 +40,7 @@ func write_csv(fullexport bool, fname string) {
 		}
 	} else {
 		buf += "name\n"
-		for _, v := range lists.ShowData.strList {
+		for _, v := range lists.ShowData.StrList {
 			buf += v + "\n"
 		}
 	}
@@ -62,7 +63,7 @@ func write_json(fullexport bool, fname string) {
 				dialog.ShowError(fmt.Errorf("Failed to marshal list:\n"+err.Error()), w)
 			}
 		} else {
-			var items []ListItem
+			var items []list.ListItem
 			for k := range inquiry.LinkageMap {
 				item := lists.Data[state.currentList][inquiry.LinkageMap[k]]
 				items = append(items, item)
@@ -73,7 +74,7 @@ func write_json(fullexport bool, fname string) {
 			}
 		}
 	} else {
-		buf, err = json.MarshalIndent(lists.ShowData.strList, "", " ")
+		buf, err = json.MarshalIndent(lists.ShowData.StrList, "", " ")
 		if err != nil {
 			dialog.ShowError(fmt.Errorf("Failed to create export file:\n"+err.Error()), w)
 		}

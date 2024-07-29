@@ -1,11 +1,10 @@
 package main
 
 import (
-	"image/color"
+	"the-list/list"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -26,29 +25,12 @@ type inquiryEntry struct {
 	list_loc int // move this to the listData struct??
 }
 
-type listData struct {
-	data    binding.ExternalStringList
-	strList []string
-}
-
-type ListItem struct {
-	Name   string
-	Rating int
-	Tags   string
-}
-
 type userList struct {
-	Data         map[string][]ListItem
+	Data         map[string][]list.ListItem
 	List         *widget.List
 	SelectEntry  *inquiryEntry
-	ShowData     listData
+	ShowData     list.ListData
 	ListModified bool
-}
-
-type ListsSummary struct {
-	Name                  string
-	TotalContentCount     int
-	ContentCountPerRating map[int]int
 }
 
 type Inquiry struct {
@@ -76,22 +58,4 @@ type AppState struct {
 type alphaSort struct {
 	enabled bool
 	order   int // 0 asc, 1 desc
-}
-
-// Default Word Cloud Configuration
-type ConfImg struct {
-	FontMaxSize     int          `json:"font_max_size"`
-	FontMinSize     int          `json:"font_min_size"`
-	RandomPlacement bool         `json:"random_placement"`
-	FontFile        string       `json:"font_file"`
-	Colors          []color.RGBA `json:"colors"`
-	BackgroundColor color.RGBA   `yaml:"background_color"`
-	Width           int          `json:"width"`
-	Height          int          `json:"height"`
-	Mask            MaskConf     `json:"mask"`
-}
-
-type MaskConf struct {
-	File  string     `json:"file"`
-	Color color.RGBA `json:"color"`
 }

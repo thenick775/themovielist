@@ -57,8 +57,8 @@ func superSwitchListUp(shortcut fyne.Shortcut) {
 		lists.GenListFromMap(s)
 		lists.RegexSearch("")
 	} else {
-		lists.ShowData.strList = lists.GenListFromMap(s)
-		lists.ShowData.data.Reload()
+		lists.ShowData.StrList = lists.GenListFromMap(s)
+		lists.ShowData.Data.Reload()
 		lists.SelectEntry.list_loc = 0
 		lists.List.Select(lists.SelectEntry.list_loc)
 		inquiryIndexAndExpand(0)
@@ -86,8 +86,8 @@ func superSwitchListDown(shortcut fyne.Shortcut) {
 		lists.GenListFromMap(s)
 		lists.RegexSearch("")
 	} else {
-		lists.ShowData.strList = lists.GenListFromMap(s)
-		lists.ShowData.data.Reload()
+		lists.ShowData.StrList = lists.GenListFromMap(s)
+		lists.ShowData.Data.Reload()
 		lists.SelectEntry.list_loc = 0
 		lists.List.Select(lists.SelectEntry.list_loc)
 		inquiryIndexAndExpand(0)

@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"the-list/analytics"
+	"the-list/list"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -28,14 +30,14 @@ func genAddForm(_ fyne.Window) fyne.CanvasObject {
 	rating.SetPlaceHolder("Item Rating (1-5)")
 	rating.Validator = validation.NewRegexp(`^[1-5]{1}$`, "not a valid rating (1-5)")
 
-	tagentry := NewSubmitEntry()
-	tagentry.SetPlaceHolder("Enter Tags here")
+	tagEntry := NewSubmitEntry()
+	tagEntry.SetPlaceHolder("Enter Tags here")
 
 	form := &widget.Form{
 		Items: []*widget.FormItem{
 			{Text: "Name", Widget: name, HintText: "The Name of your Item"},
 			{Text: "Rating", Widget: rating, HintText: "The Item's rating"},
-			{Text: "Tags", Widget: tagentry, HintText: "Enter your tags here to add to list"},
+			{Text: "Tags", Widget: tagEntry, HintText: "Enter your tags here to add to list"},
 		},
 		OnCancel: func() {
 			tree.OnSelected(state.currentMenuItem)
@@ -46,26 +48,26 @@ func genAddForm(_ fyne.Window) fyne.CanvasObject {
 				return
 			}
 			intVar, _ := strconv.Atoi(rating.Text)
-			lists.Data[state.currentList] = append(lists.Data[state.currentList], ListItem{Name: name.Text, Rating: intVar, Tags: tagentry.Text})
-			inquiry.FilterList += fmt.Sprintf("\n%s %s %s", name.Text, rating.Text, tagentry.Text)
-			f := fmt.Sprintf("%s %s %s", name.Text, rating.Text, tagentry.Text)
+			lists.Data[state.currentList] = append(lists.Data[state.currentList], list.ListItem{Name: name.Text, Rating: intVar, Tags: tagEntry.Text})
+			inquiry.FilterList += fmt.Sprintf("\n%s %s %s", name.Text, rating.Text, tagEntry.Text)
+			f := fmt.Sprintf("%s %s %s", name.Text, rating.Text, tagEntry.Text)
 			inquiry.SearchMap[f] = len(lists.Data[state.currentList]) - 1
 			if inquiry.LinkageMap != nil { //refresh the linkage map/search map
 				lists.RegexSearch(lists.SelectEntry.Text)
-			} else { //append shown data to existing baselist
-				lists.ShowData.strList = append(lists.ShowData.strList, name.Text)
-				lists.ShowData.data.Reload()
+			} else { //append shown data to existing base list
+				lists.ShowData.StrList = append(lists.ShowData.StrList, name.Text)
+				lists.ShowData.Data.Reload()
 			}
 			name.SetText("")
 			name.SetValidationError(nil)
 			rating.SetText("")
 			rating.SetValidationError(nil)
-			tagentry.SetText("")
-			tagentry.SetValidationError(nil)
+			tagEntry.SetText("")
+			tagEntry.SetValidationError(nil)
 			lists.ListModified = true
 		},
 	}
-	tagentry.onSubmit = form.OnSubmit
+	tagEntry.onSubmit = form.OnSubmit
 
 	title := widget.NewLabel("Add")
 	intro := widget.NewLabel("Add items to your list here, use the enter key to submit\n")
@@ -128,13 +130,13 @@ func genRemove(w fyne.Window) fyne.CanvasObject {
 						//need to implement
 						dialog.ShowInformation("Information", "List Item: "+name.Text+" deleted", w)
 						lists.ListModified = true
-						for i := range lists.ShowData.strList { //remove from
-							if lists.ShowData.strList[i] == name.Text {
-								lists.ShowData.strList = append(lists.ShowData.strList[:i], lists.ShowData.strList[i+1:]...)
+						for i := range lists.ShowData.StrList { //remove from
+							if lists.ShowData.StrList[i] == name.Text {
+								lists.ShowData.StrList = append(lists.ShowData.StrList[:i], lists.ShowData.StrList[i+1:]...)
 								break
 							}
 						}
-						lists.ShowData.data.Reload()
+						lists.ShowData.Data.Reload()
 						name.SetText("")
 						name.SetValidationError(nil)
 					}
@@ -154,15 +156,15 @@ func genRemove(w fyne.Window) fyne.CanvasObject {
 }
 
 func genEdit(_ fyne.Window) fyne.CanvasObject {
-	var oldloc int
-	var item ListItem
+	var oldLoc int
+	var item list.ListItem
 	if !state.noList || state.currentList == "" {
 		if inquiry.LinkageMap == nil {
 			item = lists.Data[state.currentList][lists.SelectEntry.list_loc]
-			oldloc = lists.SelectEntry.list_loc
+			oldLoc = lists.SelectEntry.list_loc
 		} else { //use the linkage
 			item = lists.Data[state.currentList][inquiry.LinkageMap[lists.SelectEntry.list_loc]]
-			oldloc = inquiry.LinkageMap[lists.SelectEntry.list_loc]
+			oldLoc = inquiry.LinkageMap[lists.SelectEntry.list_loc]
 		}
 	}
 	name := widget.NewEntry()
@@ -196,8 +198,8 @@ func genEdit(_ fyne.Window) fyne.CanvasObject {
 				return
 			}
 			intVar, _ := strconv.Atoi(rating.Text)
-			lists.Data[state.currentList][oldloc] = ListItem{Name: name.Text, Rating: intVar, Tags: tagentry.Text}
-			lists.ShowData.data.Reload()
+			lists.Data[state.currentList][oldLoc] = list.ListItem{Name: name.Text, Rating: intVar, Tags: tagentry.Text}
+			lists.ShowData.Data.Reload()
 			lists.ListModified = true
 		},
 	}
@@ -325,8 +327,8 @@ func genSwitchList(_ fyne.Window) fyne.CanvasObject {
 			lists.GenListFromMap(s)
 			lists.RegexSearch("")
 		} else {
-			lists.ShowData.strList = lists.GenListFromMap(s)
-			lists.ShowData.data.Reload()
+			lists.ShowData.StrList = lists.GenListFromMap(s)
+			lists.ShowData.Data.Reload()
 			lists.SelectEntry.list_loc = 0
 			lists.List.Select(lists.SelectEntry.list_loc)
 			inquiryIndexAndExpand(0)
@@ -359,7 +361,7 @@ func genAddList(_ fyne.Window) fyne.CanvasObject {
 				dialog.ShowInformation("Information", "No list, no action taken", w)
 				return
 			}
-			lists.Data[newList.Text] = []ListItem{}
+			lists.Data[newList.Text] = []list.ListItem{}
 			lists.ListModified = true
 			newList.SetText("")
 			newList.SetValidationError(nil)
@@ -428,10 +430,10 @@ func genDeleteList(_ fyne.Window) fyne.CanvasObject {
 						lists.ListModified = true
 						if state.currentList == delList.Text {
 							key_zero := lists.GetOrderedListNames()[0] //need to work on case deleting last list
-							lists.ShowData.strList = lists.GenListFromMap(key_zero)
+							lists.ShowData.StrList = lists.GenListFromMap(key_zero)
 							lists.SelectEntry.list_loc = 0
 							lists.List.Select(lists.SelectEntry.list_loc)
-							lists.ShowData.data.Reload()
+							lists.ShowData.Data.Reload()
 							state.currentList = key_zero
 						}
 						dialog.ShowInformation("Information", "List "+delList.Text+" deleted", w)
@@ -487,7 +489,8 @@ func genWordCloud(_ fyne.Window) fyne.CanvasObject {
 
 	go func() { //async image processing/rendering+data processing
 		//gen image and retrieve data
-		g_img, g_data := genWordCloudImg()
+		isLightMode := strings.EqualFold(state.currentThemeAlias, "light")
+		g_img, g_data := analytics.GenWordCloudImg(lists.Data[state.currentList], fontLoc, isLightMode)
 		image.Image = g_img
 		title.SetText("Word Cloud")
 		title.Refresh()
@@ -513,7 +516,7 @@ func genWordCloud(_ fyne.Window) fyne.CanvasObject {
 
 func genStatistics(_ fyne.Window) fyne.CanvasObject {
 	title := widget.NewLabel("Statistics")
-	stats := genStats()
+	stats := analytics.GenStats(lists.Data)
 	totalLists := len(stats)
 
 	//generate markdown

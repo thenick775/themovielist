@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"the-list/list"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -81,7 +82,7 @@ func main() {
 	} else {
 		state.noList = true
 		dialog.ShowInformation("Information", "No list file,\nPlease select a file location using:\nConfiguration > Defaults", w)
-		lists.Data = make(map[string][]ListItem)
+		lists.Data = make(map[string][]list.ListItem)
 	}
 
 	// initialize lists and inquiry

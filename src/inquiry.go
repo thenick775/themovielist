@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"the-list/list"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -27,22 +28,22 @@ func (i *Inquiry) Initialize() {
 func (l *userList) Initialize() {
 	l.ListModified = false
 	if state.alphaSort.enabled {
-		l.ShowData = listData{strList: []string{}}
-		l.ShowData.data = binding.BindStringList(
-			&l.ShowData.strList,
+		l.ShowData = list.ListData{StrList: []string{}}
+		l.ShowData.Data = binding.BindStringList(
+			&l.ShowData.StrList,
 		)
 		lists.GenListFromMap(state.currentList)
 	} else {
-		l.ShowData = listData{strList: lists.GenListFromMap(state.currentList)} //guard this?
-		l.ShowData.data = binding.BindStringList(
-			&l.ShowData.strList,
+		l.ShowData = list.ListData{StrList: lists.GenListFromMap(state.currentList)} //guard this?
+		l.ShowData.Data = binding.BindStringList(
+			&l.ShowData.StrList,
 		)
 	}
 
 	l.SelectEntry = newInquiryEntry()
 	l.SelectEntry.PlaceHolder = "Type your regular expression"
 
-	l.List = widget.NewListWithData(l.ShowData.data,
+	l.List = widget.NewListWithData(l.ShowData.Data,
 		func() fyne.CanvasObject {
 			lb := widget.NewLabel("template")
 			lb.Truncation = fyne.TextTruncateEllipsis
@@ -72,9 +73,9 @@ func (i *inquiryEntry) KeyDown(key *fyne.KeyEvent) {
 	switch key.Name {
 	case fyne.KeyReturn:
 		if i.Text == "" && !state.alphaSort.enabled {
-			lists.ShowData.strList = lists.GenListFromMap(state.currentList)
+			lists.ShowData.StrList = lists.GenListFromMap(state.currentList)
 			lists.SelectEntry.list_loc = 0
-			lists.ShowData.data.Reload()
+			lists.ShowData.Data.Reload()
 			inquiry.LinkageMap = nil
 			lists.List.Select(0)
 			inquiryIndexAndExpand(0)
@@ -193,7 +194,7 @@ func inquiryScroll(key fyne.KeyEvent, loc int) {
 		switch key.Name {
 		case fyne.KeyDown: //for inquiry list navigation
 			loc += 1
-			if loc > len(lists.ShowData.strList)-1 {
+			if loc > len(lists.ShowData.StrList)-1 {
 				inquiry.InquiryScrollStop = false
 				break
 			}
@@ -288,9 +289,9 @@ func (l *userList) RegexSearch(input string) {
 	} else {
 		inquiry.InqIntro.SetText("Querying List: " + state.currentList + ", query: " + input + "\nresult size: " + strconv.Itoa(len(res)))
 	}
-	l.ShowData.strList = tmp
+	l.ShowData.StrList = tmp
 	l.SelectEntry.list_loc = 0
-	l.ShowData.data.Reload()
+	l.ShowData.Data.Reload()
 	l.List.Select(0) // ??why doesn't this call onSelected??
 	inquiryIndexAndExpand(0)
 }
@@ -324,7 +325,7 @@ func inquiryIndexAndExpand(index int) {
 	}
 	lists.SelectEntry.list_loc = index
 
-	var item ListItem
+	var item list.ListItem
 	if inquiry.LinkageMap == nil {
 		item = lists.Data[state.currentList][index]
 	} else { // use the linkage
