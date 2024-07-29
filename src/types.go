@@ -24,15 +24,13 @@ type inquiryEntry struct {
 	widget.Entry
 	list_loc int // move this to the listData struct??
 }
-
 type userList struct {
 	Data         map[string][]list.ListItem
 	List         *widget.List
 	SelectEntry  *inquiryEntry
 	ShowData     list.ListData
-	ListModified bool
+	Modified bool
 }
-
 type Inquiry struct {
 	FilterList        string
 	SearchMap         map[string]int
@@ -54,7 +52,6 @@ type AppState struct {
 	alphaSort         alphaSort
 	currentThemeAlias string
 }
-
 type alphaSort struct {
 	enabled bool
 	order   int // 0 asc, 1 desc

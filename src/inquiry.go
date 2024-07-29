@@ -26,7 +26,7 @@ func (i *Inquiry) Initialize() {
 }
 
 func (l *userList) Initialize() {
-	l.ListModified = false
+	l.Modified = false
 	if state.alphaSort.enabled {
 		l.ShowData = list.ListData{StrList: []string{}}
 		l.ShowData.Data = binding.BindStringList(

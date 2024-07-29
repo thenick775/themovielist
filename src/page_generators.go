@@ -64,7 +64,7 @@ func genAddForm(_ fyne.Window) fyne.CanvasObject {
 			rating.SetValidationError(nil)
 			tagEntry.SetText("")
 			tagEntry.SetValidationError(nil)
-			lists.ListModified = true
+			lists.Modified = true
 		},
 	}
 	tagEntry.onSubmit = form.OnSubmit
@@ -129,7 +129,7 @@ func genRemove(w fyne.Window) fyne.CanvasObject {
 					} else {
 						//need to implement
 						dialog.ShowInformation("Information", "List Item: "+name.Text+" deleted", w)
-						lists.ListModified = true
+						lists.Modified = true
 						for i := range lists.ShowData.StrList { //remove from
 							if lists.ShowData.StrList[i] == name.Text {
 								lists.ShowData.StrList = append(lists.ShowData.StrList[:i], lists.ShowData.StrList[i+1:]...)
@@ -177,20 +177,20 @@ func genEdit(_ fyne.Window) fyne.CanvasObject {
 	rating.Validator = validation.NewRegexp(`^[1-5]{1}$`, "not a valid rating (1-5)")
 	rating.SetText(strconv.Itoa(item.Rating))
 
-	tagentry := NewSubmitEntry()
-	tagentry.SetPlaceHolder("Enter Tags here")
-	tagentry.SetText(item.Tags)
+	tagEntry := NewSubmitEntry()
+	tagEntry.SetPlaceHolder("Enter Tags here")
+	tagEntry.SetText(item.Tags)
 
 	form := &widget.Form{
 		Items: []*widget.FormItem{
 			{Text: "Name", Widget: name, HintText: "The Name of your Item"},
 			{Text: "Rating", Widget: rating, HintText: "The Item's rating"},
-			{Text: "Tags", Widget: tagentry, HintText: "Enter your tags here to add to list"},
+			{Text: "Tags", Widget: tagEntry, HintText: "Enter your tags here to add to list"},
 		},
 		OnCancel: func() {
 			name.SetText(item.Name)
 			rating.SetText(strconv.Itoa(item.Rating))
-			tagentry.SetText(item.Tags)
+			tagEntry.SetText(item.Tags)
 		},
 		OnSubmit: func() {
 			if state.noList || state.currentList == "" {
@@ -198,12 +198,12 @@ func genEdit(_ fyne.Window) fyne.CanvasObject {
 				return
 			}
 			intVar, _ := strconv.Atoi(rating.Text)
-			lists.Data[state.currentList][oldLoc] = list.ListItem{Name: name.Text, Rating: intVar, Tags: tagentry.Text}
+			lists.Data[state.currentList][oldLoc] = list.ListItem{Name: name.Text, Rating: intVar, Tags: tagEntry.Text}
 			lists.ShowData.Data.Reload()
-			lists.ListModified = true
+			lists.Modified = true
 		},
 	}
-	tagentry.onSubmit = form.OnSubmit
+	tagEntry.onSubmit = form.OnSubmit
 
 	title := widget.NewLabel("Edit")
 	intro := widget.NewLabel("Edit items in your list here, use the enter key to submit\n")
@@ -320,7 +320,7 @@ func genSwitchList(_ fyne.Window) fyne.CanvasObject {
 	intro := widget.NewLabel("Choose your active list\n")
 	keys := lists.GetOrderedListNames()
 
-	radiogr := widget.NewRadioGroup(keys, func(s string) {
+	radioGroup := widget.NewRadioGroup(keys, func(s string) {
 		state.currentList = s
 		lists.SelectEntry.SetText("")
 		if state.alphaSort.enabled {
@@ -334,12 +334,12 @@ func genSwitchList(_ fyne.Window) fyne.CanvasObject {
 			inquiryIndexAndExpand(0)
 		}
 	})
-	radiogr.Horizontal = false
-	radiogr.Required = true
-	radiogr.SetSelected(state.currentList)
+	radioGroup.Horizontal = false
+	radioGroup.Required = true
+	radioGroup.SetSelected(state.currentList)
 
 	return container.NewBorder(
-		container.NewVBox(title, widget.NewSeparator(), intro), nil, nil, nil, container.NewVScroll(radiogr))
+		container.NewVBox(title, widget.NewSeparator(), intro), nil, nil, nil, container.NewVScroll(radioGroup))
 }
 
 func genAddList(_ fyne.Window) fyne.CanvasObject {
@@ -362,7 +362,7 @@ func genAddList(_ fyne.Window) fyne.CanvasObject {
 				return
 			}
 			lists.Data[newList.Text] = []list.ListItem{}
-			lists.ListModified = true
+			lists.Modified = true
 			newList.SetText("")
 			newList.SetValidationError(nil)
 		},
@@ -395,7 +395,7 @@ func genEditList(_ fyne.Window) fyne.CanvasObject {
 			}
 			lists.Data[newList.Text] = lists.Data[state.currentList]
 			delete(lists.Data, state.currentList)
-			lists.ListModified = true
+			lists.Modified = true
 		},
 	}
 	newList.onSubmit = form.OnSubmit
@@ -427,7 +427,7 @@ func genDeleteList(_ fyne.Window) fyne.CanvasObject {
 				if response {
 					if _, ok := lists.Data[delList.Text]; ok {
 						delete(lists.Data, delList.Text)
-						lists.ListModified = true
+						lists.Modified = true
 						if state.currentList == delList.Text {
 							key_zero := lists.GetOrderedListNames()[0] //need to work on case deleting last list
 							lists.ShowData.StrList = lists.GenListFromMap(key_zero)

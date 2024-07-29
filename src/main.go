@@ -118,7 +118,7 @@ func main() {
 	w.Resize(fyne.NewSize(940, 660))
 	w.Canvas().Focus(lists.SelectEntry)
 	w.SetOnClosed(func() {
-		if lists.ListModified {
+		if lists.Modified {
 			fmt.Println("list modified, saving to file")
 			file2, err := json.MarshalIndent(lists.Data, "", " ")
 			if err != nil {
